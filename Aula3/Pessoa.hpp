@@ -151,6 +151,7 @@ class Pessoa
 				delete apagar;
 				return 0;
 			}
+
 			if (apagar->getFilhoDireita() != NULL){
 				if (apagar->getFilhoDireita()->isFolha()){
 					if (apagar->pai->getFilhoDireita() == apagar) apagar->pai->setFilhoDireita(apagar->getFilhoDireita());
@@ -158,6 +159,11 @@ class Pessoa
 					apagar->filho_direita->setPai(apagar->getPai());
 					delete apagar;
 					return 0;
+				}else{ //filho direito de apagar possui dois filhos
+					if (apagar->pai->getFilhoDireita() == apagar) apagar->pai->setFilhoDireita(apagar->getFilhoDireita());
+					else apagar->pai->setFilhoEsquerda(apagar->getFilhoDireita());
+					apagar->filho_direita->setPai(apagar->getPai());
+
 				}
 			}
 			if (apagar->getFilhoEsquerda() != NULL){
