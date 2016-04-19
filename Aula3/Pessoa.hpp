@@ -108,7 +108,14 @@ class Pessoa
 		};
 
 		int listarPre(){
-			cout << this->getNome() << endl;
+		    string pai, esquerda, direita = "Nada";
+		    if (this->pai != NULL) pai = this->pai->nome;
+		    if (this->filho_direita != NULL) direita = this->filho_direita->nome;
+		    if (this->filho_esquerda != NULL) esquerda = this->filho_esquerda->nome;
+			cout << endl << endl << "Nome: " << this->getNome() << endl;
+			cout << "Direita: " << direita << endl;
+			cout << "Esquerda: " << esquerda << endl;
+			cout << "Pai: " << pai << endl;
 			if ((this->filho_esquerda == NULL) && (this->filho_direita==NULL)) {
 				return 0;
 			}
@@ -139,45 +146,52 @@ class Pessoa
 			return NULL;
 		};
 
-		int apagar(int valor){
+		//percorre a arvore em busca de uma valor e o apaga
+
+		int removerValor(int valor){
 			Pessoa *apagar = this->buscar(valor);
 			if(apagar->getPai() == NULL){
+                //this = apagar->removerNo();
+                //this->setPai(NULL);
+                //delete apagar;
 				cout << "Apaga raiz implementar mais tarde!" << endl;
 				return 1;
 			}
-			if (apagar->isFolha()) {
-				if (apagar->pai->getFilhoDireita() == apagar) apagar->pai->setFilhoDireita(NULL);
-				else apagar->pai->setFilhoEsquerda(NULL);
-				delete apagar;
-				return 0;
-			}
-
-			if (apagar->getFilhoDireita() != NULL){
-				if (apagar->getFilhoDireita()->isFolha()){
-					if (apagar->pai->getFilhoDireita() == apagar) apagar->pai->setFilhoDireita(apagar->getFilhoDireita());
-					else apagar->pai->setFilhoEsquerda(apagar->getFilhoDireita());
-					apagar->filho_direita->setPai(apagar->getPai());
-					delete apagar;
-					return 0;
-				}else{ //filho direito de apagar possui dois filhos
-					if (apagar->pai->getFilhoDireita() == apagar) apagar->pai->setFilhoDireita(apagar->getFilhoDireita());
-					else apagar->pai->setFilhoEsquerda(apagar->getFilhoDireita());
-					apagar->filho_direita->setPai(apagar->getPai());
-
-				}
-			}
-			if (apagar->getFilhoEsquerda() != NULL){
-				if (apagar->getFilhoEsquerda()->isFolha()){
-					if (apagar->pai->getFilhoDireita() == apagar) apagar->pai->setFilhoDireita(apagar->getFilhoEsquerda());
-					else apagar->pai->setFilhoEsquerda(apagar->getFilhoEsquerda());
-					apagar->filho_esquerda->setPai(apagar->getPai());
-					delete apagar;
-					return 0;
-				}
-			}
+            if (apagar->pai->getFilhoDireita() == apagar) apagar->pai->setFilhoDireita(apagar->removerNo());
+            else apagar->pai->setFilhoEsquerda(apagar->removerNo());
+            delete apagar;
 			return 1;
-
 		};
+
+		//realiza as operações necessarias para manter a arvore binária correta durante exclusão
+		//retorno: Endereço de memória para o objeto que deve substituir o no a ser removido
+
+		Pessoa* removerNo(){
+		    Pessoa *retorno, *auxiliar;
+		    if (this->filho_direita == NULL){
+                retorno = this->filho_esquerda;
+                if (retorno != NULL) retorno->setPai(this->pai);
+                return retorno;
+		    }
+		    auxiliar = this;
+		    retorno = this->filho_direita;
+		    while(retorno->getFilhoEsquerda()!=NULL){
+                auxiliar = retorno;
+                retorno = retorno->getFilhoEsquerda();
+		    }
+		    if(auxiliar != this){
+                retorno->getFilhoDireita()->setPai(auxiliar);
+                auxiliar->setFilhoEsquerda(retorno->getFilhoDireita());
+                //auxiliar->getFilhoEsquerda()->setPai(auxiliar);
+                this->filho_direita->setPai(retorno);
+                retorno->setFilhoDireita(this->filho_direita);
+		    }
+		    if (this->filho_esquerda != NULL) this->filho_esquerda->setPai(retorno);
+		    retorno->setFilhoEsquerda(this->filho_esquerda);
+		    retorno->setPai(this->getPai());
+		    return retorno;
+		};
+
 
 		bool isFolha(){
 			return (this->getFilhoDireita() == NULL) && (this->getFilhoEsquerda()==NULL);
@@ -186,6 +200,9 @@ class Pessoa
 		bool isFull(){
 			return (this->getFilhoDireita() != NULL) && (this->getFilhoEsquerda()!=NULL);
 		};
+
+
+
 
 
 

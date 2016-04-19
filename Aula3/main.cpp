@@ -10,8 +10,8 @@ int main(int argc, char **argv){
 
   Pessoa *raiz = NULL;
 
-  for (i = 0; i < 5; i++) {
-    cout << "Inserir Nome: " << endl;
+  for (i = 0; i < 8; i++) {
+    cout << endl << "Inserir Nome: " << endl;
     cin >> nome;
     cout << "Inserir Idade: " << endl;
     cin >> idade;
@@ -24,21 +24,21 @@ int main(int argc, char **argv){
     }
   }
 
-  cout << "Arvore antes da exclusão!" << endl;
+  cout << endl << endl << "Arvore antes da exclusão!" << endl;
   raiz->listarPre();
 
-  cout << "Inserir Idade para buscar: " << endl;
+  cout << endl << endl << "Inserir Idade para buscar: " << endl;
   cin >> idade;
 
   //cout << raiz->buscar(idade) << endl;
 
-  raiz->apagar(idade);
+  raiz->removerValor(idade);
 
-  cout << "Arvore depois da exclusão!" << endl;
+  cout << endl << endl << "Arvore depois da exclusão!" << endl;
   raiz->listarPre();
 
 
-  cout << "Apagando Arvore geral!" << endl;
+  cout << endl << endl << "Apagando Arvore geral!" << endl;
   raiz->apagarArvore();
 
 return 0;
