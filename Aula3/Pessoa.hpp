@@ -108,14 +108,16 @@ class Pessoa
 		};
 
 		int listarPre(){
-		    string pai, esquerda, direita = "Nada";
-		    if (this->pai != NULL) pai = this->pai->nome;
-		    if (this->filho_direita != NULL) direita = this->filho_direita->nome;
-		    if (this->filho_esquerda != NULL) esquerda = this->filho_esquerda->nome;
-			cout << endl << endl << "Nome: " << this->getNome() << endl;
-			cout << "Direita: " << direita << endl;
-			cout << "Esquerda: " << esquerda << endl;
-			cout << "Pai: " << pai << endl;
+	    string pai, esquerda, direita;
+			direita = "vazio";
+			esquerda = "vazio";
+			pai = "vazio";
+	    if (this->pai != NULL) pai = this->pai->nome;
+	    if (this->filho_direita != NULL) direita = this->filho_direita->nome;
+	    if (this->filho_esquerda != NULL) esquerda = this->filho_esquerda->nome;
+			cout << endl << endl << "Nome: " << this->nome << endl;
+			cout << "Idade: " << this->idade << endl;
+			cout << "Direita: " << direita << " Esquerda: " << esquerda << " Pai: " << pai << endl;
 			if ((this->filho_esquerda == NULL) && (this->filho_direita==NULL)) {
 				return 0;
 			}
@@ -146,26 +148,80 @@ class Pessoa
 			return NULL;
 		};
 
-		//percorre a arvore em busca de uma valor e o apaga
+		//percorre a arvore em busca de um valor e o apaga
 
-		int removerValor(int valor){
+		int removerValor(int valor, Pessoa ** raiz){
+			Pessoa *novo_no;
 			Pessoa *apagar = this->buscar(valor);
+
+
+			if (apagar == NULL) {
+				cout << "NÃ£o encontrado" << endl;
+				return 0;
+			}
+
 			if(apagar->getPai() == NULL){
-                //this = apagar->removerNo();
-                //this->setPai(NULL);
-                //delete apagar;
-				cout << "Apaga raiz implementar mais tarde!" << endl;
+				(*raiz) = apagar->removerNo();
+				(*raiz)->setPai(NULL);
+				delete apagar;
 				return 1;
 			}
-            if (apagar->pai->getFilhoDireita() == apagar) apagar->pai->setFilhoDireita(apagar->removerNo());
-            else apagar->pai->setFilhoEsquerda(apagar->removerNo());
-            delete apagar;
+
+			if (apagar->getFilhoDireita() == NULL) novo_no = apagar->removerFolha();
+			else novo_no = apagar->removerCheio();
+
+
+			if (apagar->isFilhoDireita()) apagar->pai->setFilhoDireita(novo_no);
+			else apagar->pai->setFilhoEsquerda(novo_no);
+
+			//atualizando raiz
+			if(apagar->getPai() == NULL){
+				(*raiz) = novo_no;
+				(*raiz)->setPai(NULL);
+			}
+
+      delete apagar;
 			return 1;
 		};
 
-		//realiza as operações necessarias para manter a arvore binária correta durante exclusão
-		//retorno: Endereço de memória para o objeto que deve substituir o no a ser removido
 
+		Pessoa* removerFolha(){ //remove folha e tambÃ©m nÃ³ com apenas 1 filho
+			Pessoa *novo_no;
+			if (this->filho_direita == NULL){
+							novo_no = this->filho_esquerda;
+							if (novo_no != NULL) novo_no->setPai(this->pai);
+			}
+			return novo_no;
+
+		}
+
+
+
+
+		Pessoa* removerCheio(){
+			Pessoa *novo_no, *auxiliar;
+			auxiliar = this; //pai do novo nÃ³ que tomarÃ¡ o lugar do nÃ³ removido, substituir por novo_no->getPai() depois...
+			novo_no = this->filho_direita; //nÃ³ que deve tomar lugar do nÃ³ removido
+			while(novo_no->getFilhoEsquerda()!=NULL){
+							auxiliar = novo_no;
+							novo_no = novo_no->getFilhoEsquerda();
+			}
+			if(auxiliar != this){
+							novo_no->getFilhoDireita()->setPai(auxiliar);
+							auxiliar->setFilhoEsquerda(novo_no->getFilhoDireita());
+							this->filho_direita->setPai(novo_no);
+							novo_no->setFilhoDireita(this->filho_direita);
+			}
+			if (this->filho_esquerda != NULL) this->filho_esquerda->setPai(novo_no);
+			novo_no->setFilhoEsquerda(this->filho_esquerda);
+			novo_no->setPai(this->getPai());
+			return novo_no;
+		}
+
+
+
+		//realiza as operaï¿½ï¿½es necessarias para manter a arvore binï¿½ria correta durante exclusï¿½o
+		//retorno: Endereï¿½o de memï¿½ria para o objeto que deve substituir o no a ser removido
 		Pessoa* removerNo(){
 		    Pessoa *retorno, *auxiliar;
 		    if (this->filho_direita == NULL){
@@ -194,12 +250,16 @@ class Pessoa
 
 
 		bool isFolha(){
-			return (this->getFilhoDireita() == NULL) && (this->getFilhoEsquerda()==NULL);
+			return (this->filho_esquerda == NULL) && (this->filho_direita==NULL);
 		};
 
 		bool isFull(){
-			return (this->getFilhoDireita() != NULL) && (this->getFilhoEsquerda()!=NULL);
+			return (this->filho_direita != NULL) && (this->filho_esquerda != NULL);
 		};
+
+		bool isFilhoDireita(){
+			return (this->pai->getFilhoDireita() == this);
+		}
 
 
 

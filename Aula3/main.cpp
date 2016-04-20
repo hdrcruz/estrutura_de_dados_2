@@ -32,7 +32,7 @@ int main(int argc, char **argv){
 
   //cout << raiz->buscar(idade) << endl;
 
-  raiz->removerValor(idade);
+  raiz->removerValor(idade, &raiz);
 
   cout << endl << endl << "Arvore depois da exclusão!" << endl;
   raiz->listarPre();
