@@ -166,13 +166,7 @@ class Pessoa
 			// 	delete apagar;
 			// 	return 1;
 			// }
-			if(apagar->getPai() == NULL){
 
-				(*raiz) = apagar->removerNo();
-				(*raiz)->setPai(NULL);
-				delete apagar;
-				return 1;
-			}
 
 			if (apagar->isFolha()) apagar->removerFolha(); //no fola
 			else if ((apagar->getFilhoDireita() == NULL) || (apagar->getFilhoEsquerda() == NULL)){ // no com 1 filho
@@ -184,6 +178,9 @@ class Pessoa
 
 			// if (apagar->isFilhoDireita()) apagar->pai->setFilhoDireita(novo_no);
 			// else apagar->pai->setFilhoEsquerda(novo_no);
+
+			//atualizando raiz
+
 
 
       delete apagar;
@@ -283,6 +280,14 @@ class Pessoa
 
 		bool isFilhoDireita(){
 			return (this->pai->getFilhoDireita() == this);
+		}
+
+		Pessoa * getRaiz(){ //retorna a raiz da arvore a partir de qualquer nó
+			Pessoa *raiz;
+			raiz = this->pai;
+			while (raiz->pai!=NULL) {
+				raiz = raiz->getPai();
+			}
 		}
 
 
