@@ -151,7 +151,7 @@ class Pessoa
 		//percorre a arvore em busca de um valor e o apaga
 
 		int removerValor(int valor, Pessoa ** raiz){
-			Pessoa *novo_no;
+
 			Pessoa *apagar = this->buscar(valor);
 
 
@@ -160,47 +160,69 @@ class Pessoa
 				return 0;
 			}
 
+			// if(apagar->getPai() == NULL){
+			// 	(*raiz) = apagar->removerNo();
+			// 	(*raiz)->setPai(NULL);
+			// 	delete apagar;
+			// 	return 1;
+			// }
 			if(apagar->getPai() == NULL){
+
 				(*raiz) = apagar->removerNo();
 				(*raiz)->setPai(NULL);
 				delete apagar;
 				return 1;
 			}
 
-			if (apagar->getFilhoDireita() == NULL) novo_no = apagar->removerFolha();
-			else novo_no = apagar->removerCheio();
+			if (apagar->isFolha()) apagar->removerFolha(); //no fola
+			else if ((apagar->getFilhoDireita() == NULL) || (apagar->getFilhoEsquerda() == NULL)){ // no com 1 filho
+							if (apagar->getFilhoEsquerda() != NULL) apagar->removerUnicoEsquerda(); // no com 1 filho a esquerda
+							else apagar->removerUnicoDireita(); // no com 1 filho a direita
+						}
+						else apagar->removerCheio(); //no com 2 filhos
 
 
-			if (apagar->isFilhoDireita()) apagar->pai->setFilhoDireita(novo_no);
-			else apagar->pai->setFilhoEsquerda(novo_no);
+			// if (apagar->isFilhoDireita()) apagar->pai->setFilhoDireita(novo_no);
+			// else apagar->pai->setFilhoEsquerda(novo_no);
 
-			//atualizando raiz
-			if(apagar->getPai() == NULL){
-				(*raiz) = novo_no;
-				(*raiz)->setPai(NULL);
-			}
 
       delete apagar;
 			return 1;
 		};
 
 
-		Pessoa* removerFolha(){ //remove folha e também nó com apenas 1 filho
-			Pessoa *novo_no;
-			if (this->filho_direita == NULL){
-							novo_no = this->filho_esquerda;
-							if (novo_no != NULL) novo_no->setPai(this->pai);
-			}
-			return novo_no;
-
+		void removerFolha(){ //remove folha e também nó com apenas 1 filho
+			if (this->isFilhoDireita()) this->pai->setFilhoDireita(NULL);
+			else this->pai->setFilhoEsquerda(NULL);
 		}
+
+
+		Pessoa* removerUnicoDireita(){ // no só tem filho a direita
+			Pessoa *novo_no;
+			novo_no = this->filho_direita;
+			if (this->isFilhoDireita()) this->pai->setFilhoDireita(this->filho_direita);
+			else this->pai->setFilhoEsquerda(this->filho_direita);
+			this->filho_direita->setPai(this->pai);
+			return novo_no;
+		}
+
+
+		Pessoa* removerUnicoEsquerda(){ //no só tem filho a esquerda
+			Pessoa *novo_no;
+			novo_no = this->filho_esquerda;
+			if (this->isFilhoDireita()) this->pai->setFilhoDireita(this->filho_esquerda);
+			else this->pai->setFilhoEsquerda(this->filho_esquerda);
+			this->filho_esquerda->setPai(this->pai);
+			return novo_no;
+		}
+
 
 
 
 
 		Pessoa* removerCheio(){
 			Pessoa *novo_no, *auxiliar;
-			auxiliar = this; //pai do novo nó que tomará o lugar do nó removido, substituir por novo_no->getPai() depois...
+			auxiliar = this; //pai do novo nó, substituir por novo_no->getPai() depois...
 			novo_no = this->filho_direita; //nó que deve tomar lugar do nó removido
 			while(novo_no->getFilhoEsquerda()!=NULL){
 							auxiliar = novo_no;
@@ -215,6 +237,8 @@ class Pessoa
 			if (this->filho_esquerda != NULL) this->filho_esquerda->setPai(novo_no);
 			novo_no->setFilhoEsquerda(this->filho_esquerda);
 			novo_no->setPai(this->getPai());
+			if (this->isFilhoDireita()) this->pai->setFilhoDireita(novo_no);
+			else this->pai->setFilhoEsquerda(novo_no);
 			return novo_no;
 		}
 
