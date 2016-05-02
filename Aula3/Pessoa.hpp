@@ -107,23 +107,35 @@ class Pessoa
 			}
 		};
 
-		int listarPre(){
-	    string pai, esquerda, direita;
+		int listarPre(Pessoa * raiz){
+	    /*string pai, esquerda, direita;
 			direita = "vazio";
 			esquerda = "vazio";
 			pai = "vazio";
 	    if (this->pai != NULL) pai = this->pai->nome;
 	    if (this->filho_direita != NULL) direita = this->filho_direita->nome;
-	    if (this->filho_esquerda != NULL) esquerda = this->filho_esquerda->nome;
+	    if (this->filho_esquerda != NULL) esquerda = this->filho_esquerda->nome;*/
 			cout << endl << endl << "Nome: " << this->nome << endl;
-			cout << "Idade: " << this->idade << endl;
-			cout << "Direita: " << direita << " Esquerda: " << esquerda << " Pai: " << pai << endl;
+			/*cout << "Idade: " << this->idade << endl;
+			cout << "Direita: " << direita << " Esquerda: " << esquerda << " Pai: " << pai << endl;*/
 			if ((this->filho_esquerda == NULL) && (this->filho_direita==NULL)) {
 				return 0;
 			}
 			else{
-				if (this->filho_esquerda != NULL) this->filho_esquerda->listarPre();
-				if (this->filho_direita != NULL) this->filho_direita->listarPre();
+				if (this->filho_esquerda != NULL) this->filho_esquerda->listarPre(raiz);
+				if (this->filho_direita != NULL) this->filho_direita->listarPre(raiz);
+			}
+		};
+		
+		int listarOrdem(){
+			if (this->isFolha()){
+				cout << endl << endl << "Nome: " << this->nome << endl;
+				return 0;
+			}
+			else{
+				if (this->filho_esquerda != NULL) this->filho_esquerda->listarOrdem();
+				cout << endl << endl << "Nome: " << this->nome << endl;
+				if (this->filho_direita != NULL) this->filho_direita->listarOrdem();
 			}
 		};
 
@@ -134,7 +146,7 @@ class Pessoa
 				return 0;
 			}
 			else{
-				if (this->filho_esquerda != NULL) 	this->filho_esquerda->apagarArvore();
+				if (this->filho_esquerda != NULL) this->filho_esquerda->apagarArvore();
 				if (this->filho_direita != NULL) this->filho_direita->apagarArvore();
 				delete this;
 			}
@@ -150,74 +162,54 @@ class Pessoa
 
 		//percorre a arvore em busca de um valor e o apaga
 
-		int removerValor(int valor, Pessoa ** raiz){
-
+		Pessoa removerValor(int valor, Pessoa * raiz){
+			Pessoa retorno;
+			retorno.setIdade(-1);
+			retorno.setNome("NULO");
 			Pessoa *apagar = this->buscar(valor);
-
-
 			if (apagar == NULL) {
 				cout << "Não encontrado" << endl;
-				return 0;
+				return retorno;
 			}
-
-			// if(apagar->getPai() == NULL){
-			// 	(*raiz) = apagar->removerNo();
-			// 	(*raiz)->setPai(NULL);
-			// 	delete apagar;
-			// 	return 1;
-			// }
-
-
-			if (apagar->isFolha()) apagar->removerFolha(); //no fola
+			if (apagar->isFolha()) apagar->removerFolha(&raiz); //no fola
 			else if ((apagar->getFilhoDireita() == NULL) || (apagar->getFilhoEsquerda() == NULL)){ // no com 1 filho
-							if (apagar->getFilhoEsquerda() != NULL) apagar->removerUnicoEsquerda(); // no com 1 filho a esquerda
-							else apagar->removerUnicoDireita(); // no com 1 filho a direita
+							if (apagar->getFilhoEsquerda() != NULL) apagar->removerUnicoEsquerda(&raiz); // no com 1 filho a esquerda
+							else apagar->removerUnicoDireita(&raiz); // no com 1 filho a direita
 						}
-						else apagar->removerCheio(); //no com 2 filhos
-
-
-			// if (apagar->isFilhoDireita()) apagar->pai->setFilhoDireita(novo_no);
-			// else apagar->pai->setFilhoEsquerda(novo_no);
-
-			//atualizando raiz
-
-
-
-      delete apagar;
-			return 1;
+						else apagar->removerCheio(&raiz); //no com 2 filhos
+			retorno.setIdade(apagar->getIdade());
+			retorno.setNome(apagar->getNome());
+			delete apagar;
+			return retorno;
 		};
 
 
-		void removerFolha(){ //remove folha e também nó com apenas 1 filho
+		void removerFolha(Pessoa ** raiz){ //remove folha
 			if (this->isFilhoDireita()) this->pai->setFilhoDireita(NULL);
-			else this->pai->setFilhoEsquerda(NULL);
+			else this->pai->setFilhoEsquerda(NULL);			
 		}
 
 
-		Pessoa* removerUnicoDireita(){ // no só tem filho a direita
+		Pessoa* removerUnicoDireita(Pessoa ** raiz){ // no só tem filho a direita
 			Pessoa *novo_no;
 			novo_no = this->filho_direita;
 			if (this->isFilhoDireita()) this->pai->setFilhoDireita(this->filho_direita);
 			else this->pai->setFilhoEsquerda(this->filho_direita);
-			this->filho_direita->setPai(this->pai);
+			if (this->filho_direita != NULL) this->filho_direita->setPai(this->pai);
 			return novo_no;
 		}
 
 
-		Pessoa* removerUnicoEsquerda(){ //no só tem filho a esquerda
+		Pessoa* removerUnicoEsquerda(Pessoa ** raiz){ //no só tem filho a esquerda
 			Pessoa *novo_no;
 			novo_no = this->filho_esquerda;
 			if (this->isFilhoDireita()) this->pai->setFilhoDireita(this->filho_esquerda);
 			else this->pai->setFilhoEsquerda(this->filho_esquerda);
-			this->filho_esquerda->setPai(this->pai);
+			if (this->filho_esquerda != NULL) this->filho_esquerda->setPai(this->pai);			 
 			return novo_no;
 		}
 
-
-
-
-
-		Pessoa* removerCheio(){
+		Pessoa* removerCheio(Pessoa ** raiz){
 			Pessoa *novo_no, *auxiliar;
 			auxiliar = this; //pai do novo nó, substituir por novo_no->getPai() depois...
 			novo_no = this->filho_direita; //nó que deve tomar lugar do nó removido
@@ -226,8 +218,8 @@ class Pessoa
 							novo_no = novo_no->getFilhoEsquerda();
 			}
 			if(auxiliar != this){
-							novo_no->getFilhoDireita()->setPai(auxiliar);
-							auxiliar->setFilhoEsquerda(novo_no->getFilhoDireita());
+							if(novo_no->getFilhoDireita() != NULL) novo_no->getFilhoDireita()->setPai(auxiliar);
+							if(auxiliar != NULL) auxiliar->setFilhoEsquerda(novo_no->getFilhoDireita());							
 							this->filho_direita->setPai(novo_no);
 							novo_no->setFilhoDireita(this->filho_direita);
 			}
@@ -235,10 +227,9 @@ class Pessoa
 			novo_no->setFilhoEsquerda(this->filho_esquerda);
 			novo_no->setPai(this->getPai());
 			if (this->isFilhoDireita()) this->pai->setFilhoDireita(novo_no);
-			else this->pai->setFilhoEsquerda(novo_no);
+			else this->pai->setFilhoEsquerda(novo_no);			
 			return novo_no;
 		}
-
 
 
 		//realiza as opera��es necessarias para manter a arvore bin�ria correta durante exclus�o
@@ -289,12 +280,10 @@ class Pessoa
 				raiz = raiz->getPai();
 			}
 		}
-
-
-
-
-
-
+		
+		bool isRaiz(){
+			return (this->pai == NULL);			
+		}
 
 
 };

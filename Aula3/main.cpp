@@ -6,9 +6,14 @@ int main(int argc, char **argv){
   bool continuar = true;
   int idade;
   string nome;
-  int i;
+  int i = 0;
+  int j = 0;
+
+  string lista_removidas[5][2];
+  int quantidade_removida;
 
   Pessoa *raiz = NULL;
+  Pessoa pessoa_removida;
 
   for (i = 0; i < 8; i++) {
     cout << endl << "Inserir Nome: " << endl;
@@ -25,21 +30,36 @@ int main(int argc, char **argv){
   }
 
   cout << endl << endl << "Arvore antes da exclusão!" << endl;
-  raiz->listarPre();
+  if (raiz!= NULL) raiz->listarOrdem();
 
-  cout << endl << endl << "Inserir Idade para buscar: " << endl;
-  cin >> idade;
 
-  //cout << raiz->buscar(idade) << endl;
+  quantidade_removida = 0;
+  for (i = 0; i < 5; i++) {
+    cout << endl << endl << "Inserir Idade para REMOVER: " << endl;
+    cin >> idade;
+    pessoa_removida = raiz->removerValor(idade, raiz);
+    if (pessoa_removida.getIdade() != -1) {
+      lista_removidas[i][0] = pessoa_removida.getNome();
+      lista_removidas[i][1] = to_string(pessoa_removida.getIdade());
+      j++;
+      quantidade_removida++;
+    }
+  }
 
-  raiz->removerValor(idade, &raiz);
+  if (raiz != NULL) raiz->listarPre(raiz);
+  else cout << "Arvore VAZIA!" << endl;
 
-  cout << endl << endl << "Arvore depois da exclusão!" << endl;
-  raiz->listarPre();
+
+  for (i = 0; i < quantidade_removida; i++) {
+    cout << endl << endl << "Pessoa Removida: " << i << endl;
+    cout << "Nome: " << lista_removidas[i][0] << endl;
+    cout << "Idade: " << lista_removidas[i][1] << endl;
+  }
+
 
 
   cout << endl << endl << "Apagando Arvore geral!" << endl;
-  raiz->apagarArvore();
+  if (raiz != NULL) raiz->apagarArvore();
 
 return 0;
 }
