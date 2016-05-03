@@ -15,7 +15,7 @@ int main(int argc, char **argv){
   Pessoa *raiz = NULL;
   Pessoa pessoa_removida;
 
-  for (i = 0; i < 1; i++) {
+  for (i = 0; i < 8; i++) {
     cout << endl << "Inserir Nome: " << endl;
     cin >> nome;
     cout << "Inserir Idade: " << endl;
@@ -31,6 +31,9 @@ int main(int argc, char **argv){
 
   cout << endl << endl << "Arvore antes da exclusão!" << endl;
   if (raiz!= NULL) raiz->listarOrdem();
+  
+  
+  cout << raiz->alturaArvore() << endl;
 
 
   quantidade_removida = 0;

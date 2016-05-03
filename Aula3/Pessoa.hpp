@@ -158,6 +158,7 @@ class Pessoa
 			if(this->idade == valor) return this;
 			if ((this->idade < valor) && (this->filho_direita!=NULL))  return this->filho_direita->buscar(valor);
 			if (this->filho_esquerda!=NULL)   return this->filho_esquerda->buscar(valor);
+			cout << "Elemento não encontrado" << endl;
 			return NULL;
 		};
 
@@ -168,10 +169,7 @@ class Pessoa
 			retorno.setIdade(-1);
 			retorno.setNome("NULO");
 			Pessoa *apagar = this->buscar(valor);
-			if (apagar == NULL) {
-				cout << "Não encontrado" << endl;
-				return retorno;
-			}
+			if (apagar == NULL)	return retorno;
 			if (apagar->isFolha()) apagar->removerFolha(raiz); //no fola
 			else if ((apagar->getFilhoDireita() == NULL) || (apagar->getFilhoEsquerda() == NULL)){ // no com 1 filho
 							if (apagar->getFilhoEsquerda() != NULL) apagar->removerUnicoEsquerda(raiz); // no com 1 filho a esquerda
@@ -253,7 +251,8 @@ class Pessoa
 				*raiz = substituto;
 				(*raiz)->setPai(NULL);
 				cout << (*raiz)->getNome() << endl;
-			} else	if (this->isFilhoDireita()) this->pai->setFilhoDireita(substituto);
+			}
+			else	if (this->isFilhoDireita()) this->pai->setFilhoDireita(substituto);
 					else this->pai->setFilhoEsquerda(substituto);			
 			return substituto;
 		}
@@ -311,6 +310,20 @@ class Pessoa
 		bool isRaiz(){
 			return (this->pai == NULL);			
 		}
-
+		
+		int alturaArvore(){
+			int altura;
+			int altura_esquerda = 0;
+			int altura_direita = 0;
+			if (this->isFolha()){
+				altura = 0;
+			}
+			else{
+				if(this->filho_esquerda!=NULL) altura_esquerda = this->filho_esquerda->alturaArvore();
+				if(this->filho_direita!=NULL) altura_direita = this->filho_direita->alturaArvore();
+				altura =  (altura_esquerda < altura_direita ? altura_direita + 1 : altura_esquerda + 1);				
+			}			
+			return altura;			
+		}
 
 };
