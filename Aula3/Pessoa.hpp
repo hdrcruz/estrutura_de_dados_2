@@ -305,6 +305,7 @@ class Pessoa
 			while (raiz->pai!=NULL) {
 				raiz = raiz->getPai();
 			}
+			return raiz;
 		}
 		
 		bool isRaiz(){
