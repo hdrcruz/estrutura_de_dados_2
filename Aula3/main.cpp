@@ -15,7 +15,7 @@ int main(int argc, char **argv){
   Pessoa *raiz = NULL;
   Pessoa pessoa_removida;
 
-  for (i = 0; i < 8; i++) {
+  for (i = 0; i < 1; i++) {
     cout << endl << "Inserir Nome: " << endl;
     cin >> nome;
     cout << "Inserir Idade: " << endl;
@@ -34,10 +34,10 @@ int main(int argc, char **argv){
 
 
   quantidade_removida = 0;
-  for (i = 0; i < 5; i++) {
+  for (i = 0; i < 1; i++) {
     cout << endl << endl << "Inserir Idade para REMOVER: " << endl;
     cin >> idade;
-    pessoa_removida = raiz->removerValor(idade, raiz);
+    pessoa_removida = raiz->removerValor(idade, &raiz);
     if (pessoa_removida.getIdade() != -1) {
       lista_removidas[i][0] = pessoa_removida.getNome();
       lista_removidas[i][1] = to_string(pessoa_removida.getIdade());
@@ -46,7 +46,7 @@ int main(int argc, char **argv){
     }
   }
 
-  if (raiz != NULL) raiz->listarPre(raiz);
+  if (raiz != NULL) raiz->listarOrdem();
   else cout << "Arvore VAZIA!" << endl;
 
 

@@ -106,6 +106,7 @@ class Pessoa
 				else this->filho_direita->inserirFilho(filho);
 			}
 		};
+		
 
 		int listarPre(Pessoa * raiz){
 	    /*string pai, esquerda, direita;
@@ -162,7 +163,7 @@ class Pessoa
 
 		//percorre a arvore em busca de um valor e o apaga
 
-		Pessoa removerValor(int valor, Pessoa * raiz){
+		Pessoa removerValor(int valor, Pessoa ** raiz){
 			Pessoa retorno;
 			retorno.setIdade(-1);
 			retorno.setNome("NULO");
@@ -171,12 +172,12 @@ class Pessoa
 				cout << "Não encontrado" << endl;
 				return retorno;
 			}
-			if (apagar->isFolha()) apagar->removerFolha(&raiz); //no fola
+			if (apagar->isFolha()) apagar->removerFolha(raiz); //no fola
 			else if ((apagar->getFilhoDireita() == NULL) || (apagar->getFilhoEsquerda() == NULL)){ // no com 1 filho
-							if (apagar->getFilhoEsquerda() != NULL) apagar->removerUnicoEsquerda(&raiz); // no com 1 filho a esquerda
-							else apagar->removerUnicoDireita(&raiz); // no com 1 filho a direita
+							if (apagar->getFilhoEsquerda() != NULL) apagar->removerUnicoEsquerda(raiz); // no com 1 filho a esquerda
+							else apagar->removerUnicoDireita(raiz); // no com 1 filho a direita
 						}
-						else apagar->removerCheio(&raiz); //no com 2 filhos
+						else apagar->removerCheio(raiz); //no com 2 filhos
 			retorno.setIdade(apagar->getIdade());
 			retorno.setNome(apagar->getNome());
 			delete apagar;
@@ -185,79 +186,105 @@ class Pessoa
 
 
 		void removerFolha(Pessoa ** raiz){ //remove folha
-			if (this->isFilhoDireita()) this->pai->setFilhoDireita(NULL);
-			else this->pai->setFilhoEsquerda(NULL);			
+			Pessoa *substituto = NULL; 
+			if(this->pai == NULL){
+				cout << (*raiz)->getNome() << endl;
+				*raiz = substituto;			
+			}
+			else	if (this->isFilhoDireita()) this->pai->setFilhoDireita(NULL);
+					else this->pai->setFilhoEsquerda(NULL);						
 		}
 
 
 		Pessoa* removerUnicoDireita(Pessoa ** raiz){ // no só tem filho a direita
-			Pessoa *novo_no;
-			novo_no = this->filho_direita;
-			if (this->isFilhoDireita()) this->pai->setFilhoDireita(this->filho_direita);
-			else this->pai->setFilhoEsquerda(this->filho_direita);
-			if (this->filho_direita != NULL) this->filho_direita->setPai(this->pai);
-			return novo_no;
+			Pessoa *substituto;
+			substituto = this->filho_direita;
+			if(this->pai == NULL){
+				cout << (*raiz)->getNome() << endl;
+				*raiz = substituto;
+				(*raiz)->setPai(NULL);
+				cout << (*raiz)->getNome() << endl;				
+			}
+			else{
+				if (this->isFilhoDireita()) this->pai->setFilhoDireita(this->filho_direita);
+				else this->pai->setFilhoEsquerda(this->filho_direita);
+				if (this->filho_direita != NULL) this->filho_direita->setPai(this->pai);				
+			}			
+			return substituto;
 		}
 
 
 		Pessoa* removerUnicoEsquerda(Pessoa ** raiz){ //no só tem filho a esquerda
-			Pessoa *novo_no;
-			novo_no = this->filho_esquerda;
-			if (this->isFilhoDireita()) this->pai->setFilhoDireita(this->filho_esquerda);
-			else this->pai->setFilhoEsquerda(this->filho_esquerda);
-			if (this->filho_esquerda != NULL) this->filho_esquerda->setPai(this->pai);			 
-			return novo_no;
+			Pessoa *substituto;
+			substituto = this->filho_esquerda;
+			if(this->pai == NULL){
+				cout << (*raiz)->getNome() << endl;
+				*raiz = substituto;
+				(*raiz)->setPai(NULL);
+				cout << (*raiz)->getNome() << endl;
+			}
+			else{
+				if (this->isFilhoDireita()) this->pai->setFilhoDireita(this->filho_esquerda);
+				else this->pai->setFilhoEsquerda(this->filho_esquerda);
+				if (this->filho_esquerda != NULL) this->filho_esquerda->setPai(this->pai);
+			}						 
+			return substituto;
 		}
 
 		Pessoa* removerCheio(Pessoa ** raiz){
-			Pessoa *novo_no, *auxiliar;
-			auxiliar = this; //pai do novo nó, substituir por novo_no->getPai() depois...
-			novo_no = this->filho_direita; //nó que deve tomar lugar do nó removido
-			while(novo_no->getFilhoEsquerda()!=NULL){
-							auxiliar = novo_no;
-							novo_no = novo_no->getFilhoEsquerda();
+			Pessoa *substituto, *auxiliar;
+			auxiliar = this; //pai do nó substituto, substituir por substituto->getPai() depois...
+			substituto = this->filho_direita; //nó que deve tomar lugar do nó removido
+			while(substituto->getFilhoEsquerda()!=NULL){
+							auxiliar = substituto;
+							substituto = substituto->getFilhoEsquerda();
 			}
 			if(auxiliar != this){
-							if(novo_no->getFilhoDireita() != NULL) novo_no->getFilhoDireita()->setPai(auxiliar);
-							if(auxiliar != NULL) auxiliar->setFilhoEsquerda(novo_no->getFilhoDireita());							
-							this->filho_direita->setPai(novo_no);
-							novo_no->setFilhoDireita(this->filho_direita);
+							if(substituto->getFilhoDireita() != NULL) substituto->getFilhoDireita()->setPai(auxiliar);
+							if(auxiliar != NULL) auxiliar->setFilhoEsquerda(substituto->getFilhoDireita());							
+							this->filho_direita->setPai(substituto);
+							substituto->setFilhoDireita(this->filho_direita);
 			}
-			if (this->filho_esquerda != NULL) this->filho_esquerda->setPai(novo_no);
-			novo_no->setFilhoEsquerda(this->filho_esquerda);
-			novo_no->setPai(this->getPai());
-			if (this->isFilhoDireita()) this->pai->setFilhoDireita(novo_no);
-			else this->pai->setFilhoEsquerda(novo_no);			
-			return novo_no;
+			if (this->filho_esquerda != NULL) this->filho_esquerda->setPai(substituto);
+			substituto->setFilhoEsquerda(this->filho_esquerda);
+			substituto->setPai(this->getPai());
+			if(this->pai == NULL){
+				cout << (*raiz)->getNome() << endl;
+				*raiz = substituto;
+				(*raiz)->setPai(NULL);
+				cout << (*raiz)->getNome() << endl;
+			} else	if (this->isFilhoDireita()) this->pai->setFilhoDireita(substituto);
+					else this->pai->setFilhoEsquerda(substituto);			
+			return substituto;
 		}
 
 
 		//realiza as opera��es necessarias para manter a arvore bin�ria correta durante exclus�o
 		//retorno: Endere�o de mem�ria para o objeto que deve substituir o no a ser removido
 		Pessoa* removerNo(){
-		    Pessoa *retorno, *auxiliar;
+		    Pessoa *substituto, *auxiliar;
 		    if (this->filho_direita == NULL){
-                retorno = this->filho_esquerda;
-                if (retorno != NULL) retorno->setPai(this->pai);
-                return retorno;
+                substituto = this->filho_esquerda;
+                if (substituto != NULL) substituto->setPai(this->pai);
+                return substituto;
 		    }
 		    auxiliar = this;
-		    retorno = this->filho_direita;
-		    while(retorno->getFilhoEsquerda()!=NULL){
-                auxiliar = retorno;
-                retorno = retorno->getFilhoEsquerda();
+		    substituto = this->filho_direita;
+		    while(substituto->getFilhoEsquerda()!=NULL){
+                auxiliar = substituto;
+                substituto = substituto->getFilhoEsquerda();
 		    }
 		    if(auxiliar != this){
-                retorno->getFilhoDireita()->setPai(auxiliar);
-                auxiliar->setFilhoEsquerda(retorno->getFilhoDireita());
+                substituto->getFilhoDireita()->setPai(auxiliar);
+                auxiliar->setFilhoEsquerda(substituto->getFilhoDireita());
                 //auxiliar->getFilhoEsquerda()->setPai(auxiliar);
-                this->filho_direita->setPai(retorno);
-                retorno->setFilhoDireita(this->filho_direita);
+                this->filho_direita->setPai(substituto);
+                substituto->setFilhoDireita(this->filho_direita);
 		    }
-		    if (this->filho_esquerda != NULL) this->filho_esquerda->setPai(retorno);
-		    retorno->setFilhoEsquerda(this->filho_esquerda);
-		    retorno->setPai(this->getPai());
-		    return retorno;
+		    if (this->filho_esquerda != NULL) this->filho_esquerda->setPai(substituto);
+		    substituto->setFilhoEsquerda(this->filho_esquerda);
+		    substituto->setPai(this->getPai());
+		    return substituto;
 		};
 
 
