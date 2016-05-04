@@ -108,23 +108,23 @@ class Pessoa
 		};
 		
 
-		int listarPre(Pessoa * raiz){
-	    /*string pai, esquerda, direita;
+		int listarPre(){
+			string pai, esquerda, direita;
 			direita = "vazio";
 			esquerda = "vazio";
 			pai = "vazio";
-	    if (this->pai != NULL) pai = this->pai->nome;
-	    if (this->filho_direita != NULL) direita = this->filho_direita->nome;
-	    if (this->filho_esquerda != NULL) esquerda = this->filho_esquerda->nome;*/
+			if (this->pai != NULL) pai = this->pai->nome;
+			if (this->filho_direita != NULL) direita = this->filho_direita->nome;
+			if (this->filho_esquerda != NULL) esquerda = this->filho_esquerda->nome;
 			cout << endl << endl << "Nome: " << this->nome << endl;
-			/*cout << "Idade: " << this->idade << endl;
-			cout << "Direita: " << direita << " Esquerda: " << esquerda << " Pai: " << pai << endl;*/
-			if ((this->filho_esquerda == NULL) && (this->filho_direita==NULL)) {
+			cout << "Idade: " << this->idade << endl;
+			cout << "Direita: " << direita << " Esquerda: " << esquerda << " Pai: " << pai << endl;
+			if (this->isFolha()) {
 				return 0;
 			}
 			else{
-				if (this->filho_esquerda != NULL) this->filho_esquerda->listarPre(raiz);
-				if (this->filho_direita != NULL) this->filho_direita->listarPre(raiz);
+				if (this->filho_esquerda != NULL) this->filho_esquerda->listarPre();
+				if (this->filho_direita != NULL) this->filho_direita->listarPre();
 			}
 		};
 		
@@ -230,18 +230,17 @@ class Pessoa
 		}
 
 		Pessoa* removerCheio(Pessoa ** raiz){
-			Pessoa *substituto, *auxiliar;
-			auxiliar = this; //pai do nó substituto, substituir por substituto->getPai() depois...
+			Pessoa *substituto, *auxiliar; //auxiliar = pai do nó substituto
 			substituto = this->filho_direita; //nó que deve tomar lugar do nó removido
-			while(substituto->getFilhoEsquerda()!=NULL){
-							auxiliar = substituto;
-							substituto = substituto->getFilhoEsquerda();
+			while(substituto->getFilhoEsquerda()!=NULL){										
+				substituto = substituto->getFilhoEsquerda();
 			}
+			auxiliar = substituto->getPai();
 			if(auxiliar != this){
-							if(substituto->getFilhoDireita() != NULL) substituto->getFilhoDireita()->setPai(auxiliar);
-							if(auxiliar != NULL) auxiliar->setFilhoEsquerda(substituto->getFilhoDireita());							
-							this->filho_direita->setPai(substituto);
-							substituto->setFilhoDireita(this->filho_direita);
+				if(substituto->getFilhoDireita() != NULL) substituto->getFilhoDireita()->setPai(auxiliar);
+				if(auxiliar != NULL) auxiliar->setFilhoEsquerda(substituto->getFilhoDireita());							
+				this->filho_direita->setPai(substituto);
+				substituto->setFilhoDireita(this->filho_direita);
 			}
 			if (this->filho_esquerda != NULL) this->filho_esquerda->setPai(substituto);
 			substituto->setFilhoEsquerda(this->filho_esquerda);
@@ -294,7 +293,9 @@ class Pessoa
 		bool isFull(){
 			return (this->filho_direita != NULL) && (this->filho_esquerda != NULL);
 		};
-
+		
+		
+		//retorna se o nó está a direita do pai.
 		bool isFilhoDireita(){
 			return (this->pai->getFilhoDireita() == this);
 		}
@@ -312,6 +313,9 @@ class Pessoa
 			return (this->pai == NULL);			
 		}
 		
+		
+		
+		//calcula retorna a altura do nó
 		int alturaArvore(){
 			int altura;
 			int altura_esquerda = 0;

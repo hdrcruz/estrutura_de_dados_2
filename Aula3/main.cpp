@@ -37,7 +37,7 @@ int main(int argc, char **argv){
 
 
   quantidade_removida = 0;
-  for (i = 0; i < 1; i++) {
+  for (i = 0; i < 5; i++) {
     cout << endl << endl << "Inserir Idade para REMOVER: " << endl;
     cin >> idade;
     pessoa_removida = raiz->removerValor(idade, &raiz);
@@ -46,6 +46,7 @@ int main(int argc, char **argv){
       lista_removidas[i][1] = to_string(pessoa_removida.getIdade());
       j++;
       quantidade_removida++;
+      if (raiz != NULL) raiz->listarPre();
     }
   }
 
