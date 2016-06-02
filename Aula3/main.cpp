@@ -15,7 +15,7 @@ int main(int argc, char **argv){
   Pessoa *raiz = NULL;
   Pessoa pessoa_removida;
 
-  for (i = 0; i < 8; i++) {
+  for (i = 0; i < 3; i++) {
     cout << endl << "Inserir Nome: " << endl;
     cin >> nome;
     cout << "Inserir Idade: " << endl;
@@ -30,35 +30,41 @@ int main(int argc, char **argv){
   }
 
   cout << endl << endl << "Arvore antes da exclusão!" << endl;
-  if (raiz!= NULL) raiz->listarOrdem();
+  if (raiz!= NULL) raiz->listarPre();
   
   
-  cout << raiz->alturaArvore() << endl;
+  cout << endl << "Altura da Arvore: "<< raiz->alturaArvore() << endl;
+  cout << endl << "FB raiz: "<< raiz->balanceamento() << endl;
+  
+  raiz->rotacionarDireita(&raiz);
+  
+    cout << endl << endl << "Arvore apos rotacao direita:" << endl;
+  if (raiz!= NULL) raiz->listarPre();
 
 
-  quantidade_removida = 0;
-  for (i = 0; i < 5; i++) {
-    cout << endl << endl << "Inserir Idade para REMOVER: " << endl;
-    cin >> idade;
-    pessoa_removida = raiz->removerValor(idade, &raiz);
-    if (pessoa_removida.getIdade() != -1) {
-      lista_removidas[i][0] = pessoa_removida.getNome();
-      lista_removidas[i][1] = to_string(pessoa_removida.getIdade());
-      j++;
-      quantidade_removida++;
-      if (raiz != NULL) raiz->listarPre();
-    }
-  }
+  // quantidade_removida = 0;
+  // for (i = 0; i < 5; i++) {
+  //   cout << endl << endl << "Inserir Idade para REMOVER: " << endl;
+  //   cin >> idade;
+  //   pessoa_removida = raiz->removerValor(idade, &raiz);
+  //   if (pessoa_removida.getIdade() != -1) {
+  //     lista_removidas[i][0] = pessoa_removida.getNome();
+  //     lista_removidas[i][1] = to_string(pessoa_removida.getIdade());
+  //     j++;
+  //     quantidade_removida++;
+  //     if (raiz != NULL) raiz->listarPre();
+  //   }
+  // }
 
-  if (raiz != NULL) raiz->listarOrdem();
-  else cout << "Arvore VAZIA!" << endl;
+  // if (raiz != NULL) raiz->listarOrdem();
+  // else cout << "Arvore VAZIA!" << endl;
 
 
-  for (i = 0; i < quantidade_removida; i++) {
-    cout << endl << endl << "Pessoa Removida: " << i << endl;
-    cout << "Nome: " << lista_removidas[i][0] << endl;
-    cout << "Idade: " << lista_removidas[i][1] << endl;
-  }
+  // for (i = 0; i < quantidade_removida; i++) {
+  //   cout << endl << endl << "Pessoa Removida: " << i << endl;
+  //   cout << "Nome: " << lista_removidas[i][0] << endl;
+  //   cout << "Idade: " << lista_removidas[i][1] << endl;
+  // }
 
 
 

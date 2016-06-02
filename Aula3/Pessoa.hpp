@@ -317,18 +317,69 @@ class Pessoa
 		
 		//calcula retorna a altura do nó
 		int alturaArvore(){
-			int altura;
+			//int altura;
 			int altura_esquerda = 0;
 			int altura_direita = 0;
 			if (this->isFolha()){
-				altura = 0;
+				return 0;
 			}
-			else{
-				if(this->filho_esquerda!=NULL) altura_esquerda = this->filho_esquerda->alturaArvore();
-				if(this->filho_direita!=NULL) altura_direita = this->filho_direita->alturaArvore();
-				altura =  (altura_esquerda < altura_direita ? altura_direita + 1 : altura_esquerda + 1);				
-			}			
-			return altura;			
+			// else{
+			if(this->filho_esquerda!=NULL) altura_esquerda = this->filho_esquerda->alturaArvore();
+			if(this->filho_direita!=NULL) altura_direita = this->filho_direita->alturaArvore();
+			// 	altura =  (altura_esquerda < altura_direita ? altura_direita + 1 : altura_esquerda + 1);				
+			// }			
+			// return altura;
+			return 1 + max(altura_esquerda,altura_direita);		
+		}
+		
+		int balanceamento(){
+			//int altura;
+			int altura_esquerda = 0;
+			int altura_direita = 0;
+			if (this->isFolha()){
+				return 0;
+			}
+			// else{
+			if(this->filho_esquerda!=NULL) altura_esquerda = this->filho_esquerda->alturaArvore();
+			if(this->filho_direita!=NULL) altura_direita = this->filho_direita->alturaArvore();
+			// 	altura =  (altura_esquerda < altura_direita ? altura_direita + 1 : altura_esquerda + 1);				
+			// }			
+			// return altura;
+			return altura_esquerda - altura_direita;		
+		}
+		
+		Pessoa * rotacionarDireita(Pessoa ** raiz){
+			Pessoa * auxiliar = this->filho_esquerda;
+			auxiliar->setPai(this->pai);
+						
+			this->filho_esquerda = auxiliar->getFilhoDireita();			
+			if(this->filho_esquerda != NULL) this->filho_esquerda->setPai(this);
+			auxiliar->setFilhoDireita(this);
+			this->setPai(auxiliar);
+			if(auxiliar->getPai() == NULL){
+				*raiz = auxiliar;
+				(*raiz)->setPai(NULL);
+			}
+			else	if (auxiliar->isFilhoDireita()) auxiliar->getPai()->setFilhoDireita(auxiliar);
+					else auxiliar->getPai()->setFilhoEsquerda(auxiliar);
+			return auxiliar;			
+		}
+		
+		Pessoa * rotacionarEsquerda(Pessoa ** raiz){
+			Pessoa * auxiliar = this->filho_direita;
+			auxiliar->setPai(this->pai);
+						
+			this->filho_direita = auxiliar->getFilhoEsquerda();				
+			if(this->filho_direita != NULL) this->filho_direita->setPai(this);
+			auxiliar->setFilhoEsquerda(this);
+			this->setPai(auxiliar);
+			if(auxiliar->getPai() == NULL){
+				*raiz = auxiliar;
+				(*raiz)->setPai(NULL);
+			}
+			else	if (auxiliar->isFilhoDireita()) auxiliar->getPai()->setFilhoDireita(auxiliar);
+					else auxiliar->getPai()->setFilhoEsquerda(auxiliar);
+			return auxiliar;			
 		}
 
 };
