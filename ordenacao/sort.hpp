@@ -61,12 +61,15 @@ class Sort{
       direita = fim;
 
       while (esquerda <= direita) {
-        if (vetor[esquerda] <= pivo) esquerda++;
-        else if (vetor[direita] > pivo) direita--;
-        else{
+        while (vetor[esquerda] < pivo) esquerda++;
+        while (vetor[direita] > pivo) direita--;
+        
+        if(esquerda <= direita){
           aux = vetor[esquerda];
           vetor[esquerda] = vetor[direita];
           vetor[direita] = aux;
+          esquerda++;
+          direita--;
         }
       }
 
