@@ -16,7 +16,7 @@ int main(int argc, char **argv){
 
    cout << "Vetor Ordenado: " << endl;
 
-   ordenador.quickSort(0,9);
+   ordenador.quickSortAlt(0,9);
 
    cout << "Vetor Ordenado: " << endl;
 

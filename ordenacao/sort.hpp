@@ -53,6 +53,40 @@ class Sort{
       if(esquerda < fim) quickSort(esquerda, fim);
     }
 
+    void quickSortAlt(int inicio, int fim){
+      int pivo, aux, esquerda, direita, meio;
+
+      pivo = vetor[inicio];
+      esquerda = pivo+1;
+      direita = fim;
+
+      while (esquerda <= direita) {
+        if (vetor[esquerda] <= pivo) esquerda++;
+        else if (vetor[direita] > pivo) direita--;
+        else{
+          aux = vetor[esquerda];
+          vetor[esquerda] = vetor[direita];
+          vetor[direita] = aux;
+        }
+      }
+
+        if (inicio < direita) quickSortAlt(inicio,);
+        if (esquerda < fim) quickSortAlt(,fim);
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 };
