@@ -14,9 +14,9 @@ int main(int argc, char **argv){
      cout << ordenador.getElementAt(i) << endl;
    }
 
-   
+
    //ordenador.quickSortAlt(0,9);
-   ordenador.insertionSort(10);
+   ordenador.mergeSort(0,9);
 
    cout << "Vetor Ordenado: " << endl;
 

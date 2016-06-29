@@ -23,8 +23,49 @@ class Sort{
       return vetor[index];
     }
 
-    void mergeSort(){
+    void mergeSort(int inicio, int fim){
+      int meio = (inicio + fim)/2;
+      if (inicio < fim){
+        mergeSort(inicio, meio);
+        mergeSort(meio+1, fim);
+        merge(inicio, meio, fim);
+      }
+    }
 
+    void merge(int inicio, int meio, int fim){
+      int aux[fim - inicio + 1];
+      int pos = 0;
+      int pos_esquerda = inicio;
+      int pos_direita = meio+1;
+
+      while (pos_esquerda <= meio && pos_direita <= fim){
+        if (vetor[pos_esquerda] < vetor[pos_direita])
+        {
+          aux[pos] = vetor[pos_esquerda];
+          pos++;
+          pos_esquerda++;
+        }
+        else
+        {
+          aux[pos] = vetor[pos_direita];
+          pos++;
+          pos_direita++;
+        }
+      }
+      while (pos_esquerda <= meio){
+        aux[pos] = vetor[pos_esquerda];
+        pos++;
+        pos_esquerda++;
+      }
+      while (pos_direita <= fim) {
+        aux[pos] = vetor[pos_direita];
+        pos++;
+        pos_direita++;
+      }
+      int iter;
+      for (iter = 0; iter < pos; iter++) {
+        vetor[iter + inicio] = aux[iter];
+      }
     }
 
     void quickSort(int inicio, int fim){
@@ -69,43 +110,19 @@ class Sort{
       }
     }
 
-    void SelectionSort(int number_of_elements)
+    void SelectionSort(int elementos)
     {
       int iter,jter,minIndex,temp;
-      for(iter = 0;iter<number_of_elements;iter++)
+      for(iter = 0;iter<elementos;iter++)
       {
         minIndex = iter;
-        for(jter = iter+1; jter<number_of_elements;jter++)
+        for(jter = iter+1; jter<elementos;jter++)
         {
-          if(array[jter] < array[minIndex]) minIndex = jter;
+          if(vetor[jter] < vetor[minIndex]) minIndex = jter;
         }
-          temp = array[iter];
-          array[iter] = array[minIndex];
-          array[minIndex] = temp;
-      }
-    }
-
-    void ShellSort(int *array, int number_of_elements)
-    {
-      int iter, jter, increment, temp;
-      for(increment = number_of_elements/2;increment > 0; increment /= 2)
-      {
-        for(i = increment; i<number_of_elements; i++)
-        {
-          temp = array[i];
-          for(j = i; j >= increment ;j-=increment)
-          {
-            if(temp < array[j-increment])
-            {
-              array[j] = array[j-increment];
-            }
-            else
-            {
-              break;
-            }
-          }
-          array[j] = temp;
-        }
+          temp = vetor[iter];
+          vetor[iter] = vetor[minIndex];
+          vetor[minIndex] = temp;
       }
     }
 
